@@ -9,12 +9,16 @@ Fetch scholarly artcile metadata
 ## Table of Contents
 
 - [Getting Started](#getting-started)
+- [Features](#features)
+- [How It Works](#how-it-works)
+- [Data Retrieved](#data-retrieved)
+- [Template System](#template-system)
 - [Usage](#usage)
 - [Default Mappings](#default-mappings)
 
 ## Getting Started
 
-No dependencies.
+Scholar.nvim has no dependencies.
 
 ### Installation
 
@@ -52,9 +56,66 @@ return {
     }
 ```
 
+### Configuration
+
+```lua
+require('scholar').setup({
+  template_file = "template.md",  -- Template filename
+  output_dir = "papers",          -- Output directory for generated files
+  debug = false                   -- Enable verbose debugging
+})
+```
+
+## Features
+
+- **DOI Processing**: Select any DOI in visual mode and automatically fetch complete paper metadata
+- **Reference Extraction**: Retrieves and formats ALL references from academic papers (no truncation)
+- **Template System**: Customizable Markdown templates for consistent note formatting
+- **Automatic File Creation**: Generates properly named files based on paper titles and years
+
+## How It Works
+
+1. **Select a DOI** in visual mode (supports various formats: `10.1000/xyz`, `doi:10.1000/xyz`, `https://doi.org/10.1000/xyz`)
+2. **Run the command** to fetch paper data from CrossRef API
+3. **Get formatted output** with title, authors, journal, year, and complete reference list
+4. **File is created** in your specified output directory with a clean filename
+
+## Data Retrieved
+
+For each paper, Scholar.nvim fetches:
+- Title and authors
+- Journal name and publication year
+- DOI and URL
+- Complete reference list with DOIs when available
+- Reference count statistics
+
+
+## Template System
+
+Templates support these placeholders:
+- `{{TITLE}}` - Paper title
+- `{{AUTHORS}}` - Comma-separated author list
+- `{{JOURNAL}}` - Journal name
+- `{{YEAR}}` - Publication year
+- `{{DOI}}` - Digital Object Identifier
+- `{{URL}}` - Paper URL
+- `{{REFERENCES}}` - Complete formatted reference list
+
+Templates are searched in:
+1. Current directory
+2. `.scholar/` directory (recursively up the directory tree)
+
 ## Usage
 
-Using visual mode select text of a doi.org string and activate the plugin.
+1. Install the plugin
+2. Create a template file (optional)
+3. Select any DOI text in visual mode
+4. Run `:lua require('scholar').process_doi()`
+
+Perfect for researchers, students, and academics who need to quickly gather paper metadata and references for literature reviews or research notes.
+
+
+
 
 
 ## Default Mappings
