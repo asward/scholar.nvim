@@ -146,20 +146,40 @@ end
 -- Read template file
 local function read_template()
   local current_dir = vim.fn.expand("%:p:h")
+  
+  -- First check current directory
   local template_path = current_dir .. "/" .. config.template_file
-  
-  if config.debug then
-    print("Looking for template at: " .. template_path)
-  end
-  
   local file = io.open(template_path, "r")
-  if not file then
-    return nil, "Template file not found: " .. template_path
+  if file then
+    if config.debug then
+      print("Found template at: " .. template_path)
+    end
+    local content = file:read("*a")
+    file:close()
+    return content
   end
   
-  local content = file:read("*a")
-  file:close()
-  return content
+  -- Then search for .scholar directories recursively up the directory tree
+  local dir = current_dir
+  while dir and dir ~= "/" do
+    local scholar_path = dir .. "/.scholar/" .. config.template_file
+    file = io.open(scholar_path, "r")
+    if file then
+      if config.debug then
+        print("Found template at: " .. scholar_path)
+      end
+      local content = file:read("*a")
+      file:close()
+      return content
+    end
+    
+    -- Move to parent directory
+    local parent = vim.fn.fnamemodify(dir, ":h")
+    if parent == dir then break end -- Reached root
+    dir = parent
+  end
+  
+  return nil, "Template file not found in current directory or any parent .scholar directory"
 end
 
 -- Replace placeholders in template
