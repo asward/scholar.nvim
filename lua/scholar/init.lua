@@ -380,15 +380,5 @@ Found %d references.
   end
 end
 
--- Set up commands and keymaps
-function M.setup_commands()
-  vim.api.nvim_create_user_command('DOIProcess', M.process_doi, {
-    desc = 'Process selected DOI and create buffer with raw data'
-  })
-  
-  vim.keymap.set('v', '<leader>doi', M.process_doi, {
-    desc = 'Process selected DOI'
-  })
-end
 
 return M
